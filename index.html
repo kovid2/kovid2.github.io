@@ -342,6 +342,12 @@
     <section id="projects" class="section scrollspy">
       <h3 class="page-title white-text teal">Projects</h3>
       <div class="container">
+    
+      <div class="center-align" style="margin-bottom: 25px;">
+        <button class="btn-flat waves-effect filter-btn active-filter" data-filter="all">All</button>
+        <button class="btn-flat waves-effect filter-btn" data-filter="web">Web Dev</button>
+        <button class="btn-flat waves-effect filter-btn" data-filter="ai">AI / ML</button>
+      </div>
         <div class="row" id="projects-container"></div>
         <div class="center-align" style="margin-top: 20px;">
           <button id="load-more-btn" class="btn waves-effect waves-light teal">
@@ -605,47 +611,51 @@
   <script>
     // 1. Store information for at least four projects in a JavaScript array
     const projectsData = [
-      {
-        title: "Place holder web app 1",
-        description: "A web app based on React and Tailwind CSS for real-time analytics.",
-        tools: "React, Tailwind CSS",
-        accomplishments: [
-          "Implemented dashboard interface",
-          "Integrated real-time data streaming",
-          "Optimized rendering performance"
-        ]
-      },
-      {
-        title: "Place holder web app 2",
-        description: "A lightweight task manager application built for developer productivity.",
-        tools: "React, Node.js",
-        accomplishments: [
-          "Built customizable kanban boards",
-          "Added offline local storage support",
-          "Designed clean modern UI"
-        ]
-      },
-      {
-        title: "AI Image Classifier",
-        description: "Computer vision application that categorizes images using convolutional neural networks.",
-        tools: "Python, PyTorch, OpenCV",
-        accomplishments: [
-          "Trained custom ResNet architecture",
-          "Achieved 94% classification accuracy",
-          "Deployed inference pipeline via Flask"
-        ]
-      },
-      {
-        title: "Portfolio Web App",
-        description: "Responsive personal portfolio site demonstrating projects and work experience.",
-        tools: "HTML/CSS, JavaScript, Materialize",
-        accomplishments: [
-          "Implemented dynamic content loading",
-          "Fully responsive mobile layout",
-          "Optimized asset loading speeds"
-        ]
-      }
-    ];
+  {
+    title: "Place holder web app 1",
+    category: "web",
+    description: "A web app based on React and Tailwind CSS for real-time analytics.",
+    tools: "React, Tailwind CSS",
+    accomplishments: [
+      "Implemented dashboard interface",
+      "Integrated real-time data streaming",
+      "Optimized rendering performance"
+    ]
+  },
+  {
+    title: "Place holder web app 2",
+    category: "web",
+    description: "A lightweight task manager application built for developer productivity.",
+    tools: "React, Node.js",
+    accomplishments: [
+      "Built customizable kanban boards",
+      "Added offline local storage support",
+      "Designed clean modern UI"
+    ]
+  },
+  {
+    title: "AI Image Classifier",
+    category: "ai",
+    description: "Computer vision application that categorizes images using convolutional neural networks.",
+    tools: "Python, PyTorch, OpenCV",
+    accomplishments: [
+      "Trained custom ResNet architecture",
+      "Achieved 94% classification accuracy",
+      "Deployed inference pipeline via Flask"
+    ]
+  },
+  {
+    title: "Portfolio Web App",
+    category: "web",
+    description: "Responsive personal portfolio site demonstrating projects and work experience.",
+    tools: "HTML/CSS, JavaScript, Materialize",
+    accomplishments: [
+      "Implemented dynamic content loading",
+      "Fully responsive mobile layout",
+      "Optimized asset loading speeds"
+    ]
+  }
+];
 
     let visibleProjectsCount = 2;
     function renderProjects() {
@@ -694,6 +704,69 @@
     document.addEventListener("DOMContentLoaded", function() {
       renderProjects();
     });
+  </script>
+
+  <script>
+    let currentFilter = 'all';
+
+function renderProjects() {
+  const container = document.getElementById("projects-container");
+  container.innerHTML = "";
+
+  // 1. Filter projects based on selected category
+  const filteredProjects = projectsData.filter(project => {
+    return currentFilter === 'all' || project.category === currentFilter;
+  });
+
+  // 2. Slice based on visible limit
+  const projectsToDisplay = filteredProjects.slice(0, visibleProjectsCount);
+
+  projectsToDisplay.forEach((project) => {
+    const accomplishmentsList = project.accomplishments
+      .map(item => `<li>${item}</li>`)
+      .join("");
+
+    const projectCardHtml = `
+      <div class="col s12 m6 l6">
+        <div class="card medium">
+          <div class="card-content">
+            <span class="card-title activator teal-text hoverline">
+              ${project.title}<i class="mdi-navigation-more-vert right"></i>
+            </span>
+            <p>${project.description}</p>
+          </div>
+          <div class="card-reveal">
+            <span class="card-title grey-text">
+              <small>Accomplishments</small><i class="mdi-navigation-close right"></i>
+            </span>
+            <ul>
+              <li><b>Tools:</b> ${project.tools}</li>
+              ${accomplishmentsList}
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+    container.innerHTML += projectCardHtml;
+  });
+
+  const loadMoreBtn = document.getElementById("load-more-btn");
+  if (visibleProjectsCount >= filteredProjects.length) {
+    loadMoreBtn.style.display = "none";
+  } else {
+    loadMoreBtn.style.display = "inline-block";
+  }
+}
+
+document.querySelectorAll('.filter-btn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.style.fontWeight = 'normal');
+    e.target.style.fontWeight = 'bold';
+    currentFilter = e.target.getAttribute('data-filter');
+    visibleProjectsCount = 2; 
+    renderProjects();
+  });
+});
   </script>
 </body>
 
